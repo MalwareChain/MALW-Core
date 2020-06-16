@@ -1619,16 +1619,18 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
             for (const CTxIn txin : tx.vin) {
                 CTransaction txVin;
                 uint256 hashBlock;
-                GetTransaction(txin.prevout.hash, txVin, hashBlock, true);
-                CScript prevPubKey = txVin.vout[txin.prevout.n].scriptPubKey;
-                CTxDestination address;
-                ExtractDestination(prevPubKey, address);
-                std::string walladdr1 = EncodeDestination(address);
-                const std::string locked_fm("MXX64XVVoN8VYiQaGHGaupQ7XnnmQezCDn");
-                if (locked_fm.compare(walladdr1) == 0)
-                {
-                    LogPrintf("AcceptToMemoryPool: %s found locked input address, REJECTING\n", walladdr1.c_str());
-                    return state.Invalid(error("AcceptToMemoryPool : attempt to move stolen funds"));
+                if (GetTransaction(txin.prevout.hash, txVin, hashBlock, true)) {
+                    CScript prevPubKey = txVin.vout[txin.prevout.n].scriptPubKey;
+                    CTxDestination address;
+                    if (ExtractDestination(prevPubKey, address)) {
+                        std::string walladdr1 = EncodeDestination(address);
+                        const std::string locked_fm("MXX64XVVoN8VYiQaGHGaupQ7XnnmQezCDn");
+                        if (locked_fm.compare(walladdr1) == 0)
+                        {
+                            LogPrintf("AcceptToMemoryPool: %s found locked input address, REJECTING\n", walladdr1.c_str());
+                            return state.Invalid(error("AcceptToMemoryPool : attempt to move stolen funds"));
+                        }
+                    }
                 }
             }
 
@@ -4156,13 +4158,14 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
                 //SPP stolen coins: do not allow stake
                 CTxDestination address;
-                ExtractDestination(vout.scriptPubKey, address);
-                std::string walladdr1 = EncodeDestination(address);
-                const std::string locked_fm("MXX64XVVoN8VYiQaGHGaupQ7XnnmQezCDn");
-                if (locked_fm.compare(walladdr1) == 0)
-                {
-                    LogPrintf("ConnectBlock: %s found STAKE on locked address, REJECTING BLOCK\n", walladdr1.c_str());
-                    return state.DoS(100, error("CheckBlock() : attempt to stake stolen funds"));
+                if (ExtractDestination(vout.scriptPubKey, address)) {
+                    std::string walladdr1 = EncodeDestination(address);
+                    const std::string locked_fm("MXX64XVVoN8VYiQaGHGaupQ7XnnmQezCDn");
+                    if (locked_fm.compare(walladdr1) == 0)
+                    {
+                        LogPrintf("ConnectBlock: %s found STAKE on locked address, REJECTING BLOCK\n", walladdr1.c_str());
+                        return state.DoS(100, error("CheckBlock() : attempt to stake stolen funds"));
+                    }
                 }
             }
         }
@@ -4177,15 +4180,17 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             BOOST_FOREACH (const CTxIn& in, tx.vin) {
                 CTransaction txVin;
                 uint256 hashBlock;
-                GetTransaction(in.prevout.hash, txVin, hashBlock, true);
-                CScript prevPubKey = txVin.vout[in.prevout.n].scriptPubKey;
-                CTxDestination address;
-                ExtractDestination(prevPubKey, address);
-                std::string walladdr1 = EncodeDestination(address);
-                const std::string locked_fm("MXX64XVVoN8VYiQaGHGaupQ7XnnmQezCDn");
-                if (locked_fm.compare(walladdr1) == 0) {
-                    LogPrintf("ConnectBlock: %s found locked address, REJECTING BLOCK\n", walladdr1.c_str());
-                    return state.DoS(100, error("CheckBlock() : attempt to move stolen funds"));
+                if (GetTransaction(in.prevout.hash, txVin, hashBlock, true)) {
+                    CScript prevPubKey = txVin.vout[in.prevout.n].scriptPubKey;
+                    CTxDestination address;
+                    if (ExtractDestination(prevPubKey, address)) {
+                        std::string walladdr1 = EncodeDestination(address);
+                        const std::string locked_fm("MXX64XVVoN8VYiQaGHGaupQ7XnnmQezCDn");
+                        if (locked_fm.compare(walladdr1) == 0) {
+                            LogPrintf("ConnectBlock: %s found locked address, REJECTING BLOCK\n", walladdr1.c_str());
+                            return state.DoS(100, error("CheckBlock() : attempt to move stolen funds"));
+                        }
+                    }
                 }
             }
         }
