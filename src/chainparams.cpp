@@ -146,6 +146,8 @@ public:
 
         nZerocoinStartHeight = 6002;
 
+        newSpecsBlock = 580000;
+
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
          * be spent as it did not originally exist in the database.

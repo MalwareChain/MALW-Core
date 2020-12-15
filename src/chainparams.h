@@ -114,6 +114,7 @@ public:
     int LAST_POW_BLOCK() const { return nLastPOWBlock; }
     int Zerocoin_StartHeight() const { return nZerocoinStartHeight; }
     int Zerocoin_LastOldParams() const { return nZerocoinLastOldParams; }
+    int getNewSpecsBlock() const {return newSpecsBlock; }
 
 protected:
     CChainParams() {}
@@ -133,6 +134,7 @@ protected:
     int nLastPOWBlock;
     int nMasternodeCountDrift;
     int nMaturity;
+    int newSpecsBlock;
     CAmount nStakeMinAmount;
     unsigned int nStakeMaturity;
     int nModifierUpdateBlock;
