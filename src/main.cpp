@@ -4191,7 +4191,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             }
         }
 
-        if (totalMinted < Params().COINSTAKE_MIN_AMOUNT())
+        if (totalMinted < ((chainActive.Height() > Params().getNewSpecsBlock()) ? 50 * COIN : Params().COINSTAKE_MIN_AMOUNT()))
                  return state.DoS(100, error("CheckBlock() : stake under minimum stake input"));
     }
 

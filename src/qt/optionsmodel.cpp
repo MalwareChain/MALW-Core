@@ -445,7 +445,7 @@ void OptionsModel::setStakeSplitThreshold(int value)
 
     nStakeSplitThreshold = value;
 
-    uint64_t coinstakeMinAmount = Params().COINSTAKE_MIN_AMOUNT() / COIN;
+    uint64_t coinstakeMinAmount = ((chainActive.Height() > Params().getNewSpecsBlock()) ? 50 * COIN : Params().COINSTAKE_MIN_AMOUNT()) / COIN;
     if (coinstakeMinAmount > nStakeSplitThreshold)
         nStakeSplitThreshold = coinstakeMinAmount;
 

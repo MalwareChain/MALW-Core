@@ -296,7 +296,7 @@ bool CheckStakeKernelHash(unsigned int nBits, const CBlock blockFrom, const CTra
     int64_t nValueIn = txPrev.vout[prevout.n].nValue;
     unsigned int nTimeBlockFrom = blockFrom.GetBlockTime();
 
-    if (Params().COINSTAKE_MIN_AMOUNT() > nValueIn)
+    if (((chainActive.Height() > Params().getNewSpecsBlock()) ? 50 * COIN : Params().COINSTAKE_MIN_AMOUNT()) > nValueIn)
         return error("%s : Failed to check coinstake min amount", __func__);
 
     if (nTimeTx < nTimeBlockFrom) // Transaction timestamp violation

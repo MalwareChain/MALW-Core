@@ -2220,7 +2220,7 @@ UniValue setstakesplitthreshold(const UniValue& params, bool fHelp)
     if (nStakeSplitThreshold > 999999)
         throw runtime_error("Value out of range, max allowed is 999999");
 
-    uint64_t coinstakeMinAmount = Params().COINSTAKE_MIN_AMOUNT() / COIN;
+    uint64_t coinstakeMinAmount = ((chainActive.Height() > Params().getNewSpecsBlock()) ? 50 * COIN : Params().COINSTAKE_MIN_AMOUNT()) / COIN;
     if (coinstakeMinAmount > nStakeSplitThreshold)
         nStakeSplitThreshold = coinstakeMinAmount;
 

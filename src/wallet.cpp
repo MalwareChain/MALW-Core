@@ -2088,7 +2088,7 @@ bool CWallet::SelectStakeCoins(std::set<std::pair<const CWalletTx*, unsigned int
         if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
             continue;
 
-        if (Params().COINSTAKE_MIN_AMOUNT() > out.tx->vout[out.i].nValue)
+        if (((chainActive.Height() > Params().getNewSpecsBlock()) ? 50 * COIN : Params().COINSTAKE_MIN_AMOUNT()) > out.tx->vout[out.i].nValue)
             continue;
 
         //if zerocoinspend, then use the block time
@@ -2128,7 +2128,7 @@ bool CWallet::MintableCoins()
 
     for (const COutput& out : vCoins) {        
         
-        if (Params().COINSTAKE_MIN_AMOUNT() > out.tx->vout[out.i].nValue)
+        if (((chainActive.Height() > Params().getNewSpecsBlock()) ? 50 * COIN : Params().COINSTAKE_MIN_AMOUNT()) > out.tx->vout[out.i].nValue)
                 continue;
             
         int64_t nTxTime = out.tx->GetTxTime();
