@@ -7,7 +7,7 @@ Project about
 
 Whitepaper
 -----------
-https://malwarechain.com/wp-content/uploads/2019/12/Whitepaper_V.1.0.pdf
+https://malwarechain.com/wp-content/uploads/2020/10/Whitepaper_V.2.0.pdf
 
 Web Official
 ------------
