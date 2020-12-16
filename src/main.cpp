@@ -2186,8 +2186,10 @@ int64_t GetBlockValue(int nHeight)
         nSubsidy = 150000 * COIN;
     } else if (nHeight <= Params().LAST_POW_BLOCK() && nHeight > 1) {
         nSubsidy = 500 * COIN;
-    } else if (nHeight <= 77968502 && nHeight > Params().LAST_POW_BLOCK()) {
+    } else if (nHeight <= Params().getNewSpecsBlock() && nHeight > Params().LAST_POW_BLOCK()) {
         nSubsidy = 4 * COIN;
+    } else if (nHeight <= 2100000 && nHeight > Params().getNewSpecsBlock()) {  // 31500000 MALW MAX
+        nSubsidy = 15 * COIN;
     }
 
     return nSubsidy;
@@ -2201,6 +2203,9 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         return ret;
 
     ret = blockValue * 0.98;
+
+    if (nHeight > Params().getNewSpecsBlock() + 60)
+        ret = blockValue * 0.9;
 
     return ret;
 }

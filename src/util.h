@@ -245,6 +245,9 @@ inline int64_t GetMNCollateral(int nHeight) {
 
     retval = 5000;
 
+    if (nHeight > 580720)
+        retval = 10000;
+
     return retval;
 }
 
