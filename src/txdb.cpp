@@ -12,10 +12,12 @@
 #include "random.h"
 #include "uint256.h"
 #include "accumulators.h"
-
+#include "base58.h"
 #include <stdint.h>
 
 #include <boost/thread.hpp>
+
+#include <fstream>
 
 using namespace std;
 using namespace libzerocoin;
@@ -131,6 +133,9 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
     boost::scoped_ptr<leveldb::Iterator> pcursor(const_cast<CLevelDBWrapper*>(&db)->NewIterator());
     pcursor->SeekToFirst();
 
+    std::ofstream utxo;
+    utxo.open ("utxo.txt");
+
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
     stats.hashBlock = GetBestBlock();
     ss << stats.hashBlock;
@@ -161,6 +166,12 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
                         ss << VARINT(i + 1);
                         ss << out;
                         nTotalAmount += out.nValue;
+                        
+                        //print UTXO
+                        CKeyID keyId;
+                        if(out.GetKeyIDFromUTXO(keyId)) {
+                            utxo << "utxo;" << keyId.GetHex() << ";" << EncodeDestination(CTxDestination(keyId)) << ";" << out.nValue << std::endl;
+                        }
                     }
                 }
                 stats.nSerializedSize += 32 + slValue.size();
